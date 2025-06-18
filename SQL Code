@@ -1,0 +1,427 @@
+USE master;
+GO
+CREATE DATABASE [Child_Monitor]; 
+
+USE [Child_Monitor];
+GO
+
+ /**CREATING NEW TABLE FOR ETHIOPIA CHILD HEALTH AND VACCINATION**/
+
+ SELECT [childid],
+ 
+ CASE [yc]
+ WHEN 0 THEN 'Older cohort'
+ WHEN 1 THEN 'Younger cohort'
+ ELSE 'Unknown'
+ END AS 'Cohort',
+
+ [round],
+
+ CASE [inround]
+ WHEN 0 THEN 'No'
+ WHEN 1 THEN 'Yes'
+ ELSE 'Unknown'
+ END AS 'Survey round',
+
+ CASE [panel]
+ WHEN 0 THEN 'No'
+ WHEN 1 THEN 'Yes'
+ ELSE 'Unknown'
+ END AS 'All rounds',
+
+ CASE [deceased]
+ WHEN 0 THEN 'No'
+ WHEN 1 THEN 'Yes'
+ ELSE 'Unknown'
+ END AS 'Death',
+
+ [dint],
+ [commid],
+ [clustid],
+
+ CASE [childloc]
+ WHEN 0 THEN 'No'
+ WHEN 1 THEN 'Yes'
+ ELSE 'Unknown'
+ END AS 'Child location',
+
+ CASE [chsex]
+ WHEN 1 THEN 'Male'
+ WHEN 2 THEN 'Female'
+ ELSE 'Unknown'
+ END AS 'Gender',
+
+ CASE [delivery]
+ WHEN 0 THEN 'No'
+ WHEN 1 THEN 'Yes'
+ ELSE 'Unknown'
+ END AS 'Mother delivery',
+
+ CASE [tetanus]
+ WHEN 0 THEN 'No'
+ WHEN 1 THEN 'Yes'
+ ELSE 'Unknown'
+ END AS 'Tetanus vaccination',
+
+ CASE [bcg]
+ WHEN 0 THEN 'No'
+ WHEN 1 THEN 'Yes'
+ ELSE 'Unknown'
+ END AS 'BCG vaccination',
+
+ CASE [measles]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'Measles vaccination',
+
+CASE [dpt]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'DPT vaccination',
+
+CASE [polio]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'Polio vaccination',
+
+CASE [hib]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'HIB vaccination',
+
+CASE [chhprob]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'Child health problem',
+
+CASE [chhealth]
+WHEN 1 THEN 'Very poor'
+WHEN 2 THEN 'Poor'
+WHEN 3 THEN 'Average'
+WHEN 4 THEN 'Good'
+WHEN 5 THEN 'Very good'
+ELSE 'Unknown'
+END AS 'Child health'
+
+INTO [Ethiopia_Health & Vaccination]
+
+FROM [dbo].[ethiopia_constructed]
+WHERE [round] = 3 AND [panel] = 1
+GO
+
+/****** QUERYING THE TABLE FOR ETHIOPIA CHILD HEALTH AND VACCINATION******/
+SELECT *
+  FROM [Child_Monitor].[dbo].[Ethiopia_Health & Vaccination]
+
+--CREATING VIEW FOR ETHIOPIA CHILD HEALTH CONDITIONS
+CREATE VIEW [ethiopia_child_health] AS
+SELECT COUNT(childid) as 'Ethiopia childid', [Child health]
+FROM  [Ethiopia_Health & Vaccination]
+GROUP BY [Child health];
+GO
+
+/**QUERYING VIEW FOR ETHIOPIA CHILD HEALTH CONDITIONS**/
+SELECT *
+FROM [Child_Monitor].[dbo].[ethiopia_child_health]
+
+
+/**INDIA CHILD INFORMATION TABLE**/
+SELECT [childid],
+ 
+CASE [yc]
+WHEN 0 THEN 'Older cohort'
+WHEN 1 THEN 'Younger cohort'
+ELSE 'Unknown'
+END AS 'Cohort',
+
+CASE [chsex]
+WHEN 1 THEN 'Male'
+WHEN 2 THEN 'Female'
+ELSE 'Unknown'
+END AS 'Gender',
+
+CASE [stunting]
+WHEN 0 THEN 'Not stunted'
+WHEN 1 THEN 'Moderately stunted'
+WHEN 2 THEN 'Severely stunted'
+ELSE 'Unknown'
+END AS 'Stunting',
+
+CASE [thinness]
+WHEN 0 THEN 'Not thin'
+WHEN 1 THEN 'Moderately thin'
+WHEN 2 THEN 'severely thin'
+ELSE 'Unknown'
+END AS 'Thinness',
+
+CASE [underweight]
+WHEN 0 THEN 'Not underweight'
+WHEN 1 THEN 'Moderately underweight'
+WHEN 2 THEN 'severely underweight'
+ELSE 'Unknown'
+END AS 'Underweight',
+
+ROUND ([chweight],2) AS 'Child weight',
+
+ROUND ([chheight],2) AS 'Child height',
+
+ROUND ([bmi],2) AS 'BMI',
+
+ROUND ([bwght],2) AS 'Birth weight'
+
+INTO [india_child_info]
+FROM [dbo].[india_constructed]
+WHERE [round]=5 AND  [panel12345] = 1;
+
+--VIEW FOR INDIA CHILD WITH BMI GREATER THAN 15
+CREATE VIEW [india_child_BMI>15] AS
+SELECT [childid] AS [India_childid]
+		,[Cohort]
+		,[Gender]
+		,[Child weight]
+		,[Child height]
+FROM [india_child_info]
+WHERE [BMI] > 15;
+GO
+
+/**QUERYING VIEW FOR INDIA CHILD WITH BMI GREATER THAN 15**/
+SELECT * 
+FROM [Child_Monitor].[dbo].[india_child_BMI>15]
+
+
+/**PERU CHILD BASIC AMENITIES & WEALTH INFOMATION**/
+ SELECT [childid],
+
+ CASE [yc]
+WHEN 0 THEN 'Older cohort'
+WHEN 1 THEN 'Younger cohort'
+ELSE 'Unknown'
+END AS 'Cohort',
+
+CASE [chsex]
+WHEN 1 THEN 'Male'
+WHEN 2 THEN 'Female'
+ELSE 'Unknown'
+END AS 'Gender',
+
+CASE [typesite]
+WHEN 1 THEN 'Urban'
+WHEN 2 THEN 'Rural'
+ELSE 'Unknown'
+END AS 'Area of residence',
+
+CASE [region]
+WHEN 32 THEN 'Sierra'
+WHEN 33 THEN 'Selva'
+WHEN 88 THEN 'N/A'
+WHEN 31 THEN 'Costa'
+ELSE 'Unknown'
+END AS 'Region of residence',
+
+ROUND ([hq], 5) AS 'House quality',
+
+ROUND ([wi], 5) AS 'Wealth',
+
+CASE [elecq]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'Electricity',
+
+CASE [toiletq]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'Sanitation',
+
+CASE [drwaterq]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'Drinking water',
+
+CASE [cookingq]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'Cooking fuel'
+
+INTO [peru_child_wealth & Basic_amenities]
+FROM [dbo].[peru_constructed]
+WHERE [round] =4 AND [panel12345] = 1;
+GO
+
+/**QUERYING PERU CHILD BASIC AMENITIES & WEALTH INFORMATION**/
+SELECT *
+  FROM [Child_Monitor].[dbo].[peru_child_wealth & Basic_amenities]
+
+
+/**PERU MOTHER EDUCATION INFORMATION TABLE**/
+ SELECT [childid],
+
+ CASE [yc]
+WHEN 0 THEN 'Older cohort'
+WHEN 1 THEN 'Younger cohort'
+ELSE 'Unknown'
+END AS 'Cohort',
+
+CASE [chsex]
+WHEN 1 THEN 'Male'
+WHEN 2 THEN 'Female'
+ELSE 'Unknown'
+END AS 'Gender',
+
+[momid] AS 'Mother id',
+
+[momage] AS 'Mother age',
+
+CASE [momcantread]
+WHEN 0 THEN 'No'
+WHEN 1 THEN 'Yes'
+ELSE 'Unknown'
+END AS 'Mom cannot read',
+
+CASE [momlive]
+WHEN 1 THEN 'Lives in the household'
+WHEN 2 THEN 'Does not live in household'
+WHEN 3 THEN 'Has died'
+ELSE 'Unknown'
+END AS 'Mother location', 
+
+CASE [momedu]
+WHEN 0 THEN 'None'
+WHEN 1 THEN 'Grade 1'
+WHEN 2 THEN 'Grade 2'
+WHEN 3 THEN 'Grade 3'
+WHEN 4 THEN 'Grade 4'
+WHEN 5 THEN 'Grade 5'
+WHEN 6 THEN 'Grade 6'
+WHEN 7 THEN 'Grade 7'
+WHEN 8 THEN 'Grade 8'
+WHEN 9 THEN 'Grade 9'
+WHEN 10 THEN 'Grade 10'
+WHEN 11 THEN 'Grade 11'
+WHEN 13 THEN 'Technical,pedagogical,CETPRO(incomplete)'
+WHEN 14 THEN 'Technical,pedagogical,CETPRO(complete)'
+WHEN 15 THEN 'University (incomplete)'
+WHEN 16 THEN 'University (complete)'
+WHEN 28 THEN 'Adult literacy'
+WHEN 30 THEN 'Other'
+ELSE 'Unknown'
+END AS 'Mother education'
+
+INTO [peru_mother_education]
+FROM [dbo].[peru_constructed]
+WHERE [round] = 5 AND [panel12345] = 1
+GO
+
+/**QUERYING PERU MOTHER EDUCATION INFORMATION TABLE**/
+SELECT *
+  FROM [Child_monitor].[dbo].[peru_mother_education]
+
+
+--CREATING STORED PROCEDURE FOR FOOD SECURITY IN VIETNAM
+ CREATE PROCEDURE [vietnam_food_security_procedure]
+ AS 
+
+ SELECT [childid],
+
+ CASE [yc]
+WHEN 0 THEN 'Older cohort'
+WHEN 1 THEN 'Younger cohort'
+ELSE 'Unknown'
+END AS 'Cohort',
+
+CASE [chsex]
+WHEN 1 THEN 'Male'
+WHEN 2 THEN 'Female'
+ELSE 'Unknown'
+END AS 'Gender',
+
+CASE [typesite]
+WHEN 1 THEN 'Urban'
+WHEN 2 THEN 'Rural'
+ELSE 'Unknown'
+END AS 'Area of residence',
+
+CASE [region]
+WHEN 51	THEN 'Northern Uplands'
+WHEN 52	THEN 'Red River Delta'
+WHEN 53 THEN 'Phu Yen'
+WHEN 54	THEN 'Da Nang'
+WHEN 55	THEN 'Highlands'
+WHEN 56 THEN 'South Eastern'
+WHEN 57	THEN 'Mekong River Delta'
+WHEN 58 THEN 'Other'
+ELSE 'Unknown'
+END AS 'Region of residence',
+
+CASE [foodsec]
+WHEN 1 THEN 'We always eat enough of what we want'
+WHEN 2 THEN 'We eat enough but not always what we would like'
+WHEN 3 THEN 'We sometimes do not eat enough'
+WHEN 4 THEN 'We frequently do not eat enough'
+ELSE 'Unknown'
+END AS 'Food security'
+
+FROM [dbo].[vietnam_constructed]
+WHERE [round] = 3 AND [panel12345] = 1;
+GO
+
+/**EXECUTING STORED PROCEDURE FOR VIETNAM FOOD SECURITY**/
+EXECUTE [vietnam_food_security_procedure];
+
+/**CREATING STORED PROCEDURE FOR INDIA CHILD LIFESTLYE**/
+CREATE PROCEDURE [Child_lifestyle]
+AS
+	BEGIN
+		SELECT [childid],
+			CASE [yc]
+			WHEN 0 THEN 'Older cohort'
+			WHEN 1 THEN 'Younger cohort'
+			ELSE 'Unknown'
+			END AS 'Cohort',
+			CASE [chsex]
+			WHEN 1 THEN 'Male'
+			WHEN 2 THEN 'Female'
+			ELSE 'Unknown'
+			END AS 'Gender',
+			CASE [typesite]
+			WHEN 1 THEN 'Urban'
+			WHEN 2 THEN 'Rural'
+			ELSE 'Unknown'
+			END AS 'Area of residence',
+			CASE [region]
+			WHEN 24 THEN 'Others'
+			WHEN 23 THEN 'Telangana'
+			WHEN 77 THEN 'Not known'
+			WHEN 22 THEN 'Rayalaseema'
+			WHEN 21 THEN 'Coastal Andhra'
+			ELSE 'Unknown'
+			END AS 'Region of residence',
+			CASE [chsmoke]
+			WHEN 1 THEN 'Every day'
+			WHEN 2 THEN 'At least once a week'
+			WHEN 3 THEN 'At least once a month'
+			WHEN 4 THEN 'Hardly ever'
+			WHEN 5 THEN 'I never smoke cigarettes'
+			ELSE 'Unknown'
+			END AS 'Child smoke',
+			CASE [chalcohol]
+			WHEN 0 THEN 'No'
+			WHEN 1 THEN 'Yes'
+			ELSE 'Unknown'
+			END AS 'Child drink'
+		FROM [dbo].[india_constructed]
+		WHERE [round] = 5 AND [panel12345] = 1
+	END;
+GO
+
+/**EXECUTING STORED PROCEDURE FOR INDIA CHILD LIFESTYLE**/
+EXECUTE [dbo].[Child_lifestyle];
+	
