@@ -1,4 +1,4 @@
-# Child-Wellbeing-Monitor
+# Child Well-Being Monitor – A Data-Driven Tool for Child Poverty Analysis
 🔍 Project Overview
 
 The Child Well-Being Monitor is a data reporting tool designed to provide an accessible, low-cost means of examining and visualizing child poverty metrics across nations. The tool supports policymakers, researchers, and NGOs in understanding the scale and nature of child poverty using structured data.
